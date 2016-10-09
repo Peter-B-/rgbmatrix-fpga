@@ -161,3 +161,7 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+/db
+/incremental_db
+/output_files
+/simulation
