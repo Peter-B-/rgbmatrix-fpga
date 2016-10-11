@@ -1,14 +1,6 @@
-#################
-## Eclipse
-#################
-
-*.pydevproject
-.project
-.metadata
-bin/
-tmp/
-*.tmp
+*~
 *.bak
+<<<<<<< HEAD
 *.swp
 *~.nib
 local.properties
@@ -165,3 +157,8 @@ pip-log.txt
 /incremental_db
 /output_files
 /simulation
+=======
+db/
+incremental_db/
+greybox_tmp/
+>>>>>>> pr/2
