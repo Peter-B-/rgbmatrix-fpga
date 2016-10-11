@@ -30,7 +30,13 @@ use work.rgbmatrix.all; -- Constants & Configuration
 entity top_level is
     port (
         clk_in  : in std_logic;
+		  clk_4MHz: out std_logic;
         rst_n   : in std_logic;
+
+  		  spi_cs  : in std_logic;
+		  spi_clk : in std_logic;
+		  spi_mosi: in std_logic;
+		  
         clk_out : out std_logic;
         r1      : out std_logic;
         r2      : out std_logic;
@@ -42,13 +48,20 @@ entity top_level is
         b       : out std_logic;
         c       : out std_logic;
         lat     : out std_logic;
-        oe      : out std_logic
-    );
+        oe      : out std_logic;
+		  
+  		  led1    : out std_logic;
+ 		  led2    : out std_logic;
+		  led3    : out std_logic;
+		  led4    : out std_logic;
+		  led5    : out std_logic
+
+   );
 end top_level;
 
 architecture str of top_level is
     -- Reset signals
-    signal rst, rst_p, jtag_rst_out : std_logic;
+    signal rst : std_logic;
     
     -- Memory signals
     signal addr : std_logic_vector(ADDR_WIDTH-1 downto 0);
@@ -61,13 +74,13 @@ begin
     
     -- Reset button is an "active low" input, invert it so we can treat is as
     -- "active high", then OR it with the JTAG reset command output signal.
-    rst_p <= not rst_n;
-    rst <= rst_p or jtag_rst_out;
-    
+    rst <= not rst_n;
+
+	 
     -- LED panel controller
     U_LEDCTRL : entity work.ledctrl
         port map (
-            rst => rst,
+            rst => '0',
             clk_in => clk_in,
             -- Connection to LED panel
             clk_out => clk_out,
@@ -87,14 +100,19 @@ begin
             data => data_outgoing
         );
     
-    -- Virtual JTAG interface
-    U_JTAGIFACE : entity work.jtag_iface
-        port map (
-            rst     => rst,
-            rst_out => jtag_rst_out,
-            output  => data_incoming,
-            valid   => data_valid
-        );
+    -- SPI Slave Interface
+    U_SPISLAVE : entity work.spi_slave
+		generic map (
+			N => DATA_WIDTH
+		)
+		port map (
+			clk_i      => clk_in,
+			spi_ssel_i => spi_cs,
+			spi_sck_i  => spi_clk,
+			spi_mosi_i => spi_mosi,
+			do_valid_o => data_valid,
+			do_o       => data_incoming
+		);
     
     -- Special memory for the framebuffer
     U_MEMORY : entity work.memory
@@ -108,5 +126,31 @@ begin
             addr   => addr,
             output => data_outgoing
         );
-    
+		  
+	 U_CLKDIV : entity work.clk_div
+        generic map (
+            clk_in_freq  => 50000000, -- 50MHz input clock
+            clk_out_freq =>  4000000  -- 10MHz output clock
+        )
+        port map (
+            rst => '0',
+            clk_in => clk_in,
+            clk_out => clk_4MHz
+        );
+	 
+
+	 process(addr, clk_in)
+    begin
+        if rising_edge(clk_in) then
+		    if (addr = (addr'range => '0')) then
+				 led1 <= data_outgoing(7);
+				 led2 <= data_outgoing(6);
+				 led3 <= data_outgoing(5);
+				 led4 <= data_outgoing(4);
+				 led5 <= data_outgoing(3);
+			 end if;
+        end if;
+    end process;
+
+	 
 end str;
