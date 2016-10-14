@@ -144,11 +144,11 @@ begin
     begin
         if rising_edge(clk_in) then
 		    if (addr = (addr'range => '0')) then
-				 led1 <= data_outgoing(7);
-				 led2 <= data_outgoing(6);
-				 led3 <= data_outgoing(5);
-				 led4 <= data_outgoing(4);
-				 led5 <= data_outgoing(3);
+				 led1 <= not data_outgoing(7);
+				 led2 <= not data_outgoing(6);
+				 led3 <= not data_outgoing(5);
+				 led4 <= not data_outgoing(4);
+				 led5 <= not rst;
 			 end if;
         end if;
     end process;
