@@ -76,7 +76,7 @@ begin
     -- Reset button is an "active low" input, invert it so we can treat is as
     -- "active high", then OR it with the JTAG reset command output signal.
     rst <= not rst_n;
-
+    clk_led <= clk_in;
 	 
     -- LED panel controller
     U_LEDCTRL : entity work.ledctrl
@@ -128,16 +128,6 @@ begin
             output => data_outgoing
         );
 		  
-	 U_CLKDIV : entity work.clk_div
-        generic map (
-            clk_in_freq  => 50000000, -- 50MHz input clock
-            clk_out_freq =>  4000000  -- 10MHz output clock
-        )
-        port map (
-            rst => '0',
-            clk_in => clk_in,
-            clk_out => clk_led
-        );
 	 
 
 	 process(addr, clk_in)
