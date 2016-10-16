@@ -67,7 +67,7 @@ architecture bhv of ledctrl is
 begin
 
   -- Breakout internal signals to the output port
-  led_addr <= s_led_addr;
+  led_addr <= std_logic_vector(unsigned(s_led_addr) + 7);
   addr     <= s_ram_addr;
   rgb1     <= s_rgb1;
   rgb2     <= s_rgb2;
@@ -117,17 +117,15 @@ begin
     next_rgb1      <= s_rgb1;
     next_rgb2      <= s_rgb2;
 
-r1:=s_rgb1(2);
-g1:=s_rgb1(1);
-b1:=s_rgb1(0);
-r2:=s_rgb2(2);
-g2:=s_rgb2(1);
-b2:=s_rgb2(0);
-    
+    r1:=s_rgb1(2);
+    g1:=s_rgb1(1);
+    b1:=s_rgb1(0);
+    r2:=s_rgb2(2);
+    g2:=s_rgb2(1);
+    b2:=s_rgb2(0);
 
 
-
--- Default signal assignments
+    -- Default signal assignments
     s_clk_out <= '0';
     s_lat     <= '0';
     s_oe      <= '1';                   -- this signal is "active low"
@@ -144,8 +142,8 @@ b2:=s_rgb2(0);
         end if;
         next_state <= READ_PIXEL_DATA;
       when READ_PIXEL_DATA =>
-  r1 := '0'; g1 := '0'; b1 := '0';    -- Defaults
-    r2 := '0'; g2 := '0'; b2 := '0';    -- Defaults
+        r1 := '0'; g1 := '0'; b1 := '0';    -- Defaults
+        r2 := '0'; g2 := '0'; b2 := '0';    -- Defaults
 
         s_oe <= '0';                    -- enable display
         -- Do parallel comparisons against BPP counter to gain multibit color
