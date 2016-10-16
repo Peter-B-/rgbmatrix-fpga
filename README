@@ -1,3 +1,13 @@
+This fork of the original rgbmatrix-fpga repository includes a SPI slave interface.
+
+The code for the SPI slave interface was originally published by Jonny Doin on opencores and was included unaltered.
+Please see http://opencores.org/project,spi_master_slave for further information.
+
+
+
+
+
+
 quickstart:
 
 connect the rgbmatrix to the de0nano and the de0nano to your pc.
