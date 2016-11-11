@@ -46,6 +46,7 @@ entity rgbmatrix is
         a       : out std_logic;
         b       : out std_logic;
         c       : out std_logic;
+        d       : out std_logic;
         lat     : out std_logic;
         oe      : out std_logic;
 		  
