@@ -13,18 +13,16 @@ void setup() {
 
   
     SPI.begin();
-  //  SPI.setHwCs(true);
     SPI.setDataMode(SPI_MODE0);
-    //SPI.setClockDivider(SPI_CLOCK_DIV128);
-    SPI.setFrequency(2000000);
-    //SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE0));  
-    //SPI.setFrequency(10000000);
+    SPI.setFrequency(8000000);
 
     Clear();
 }
 
+const int cols = 64;
+const int rows = 32;
 
-byte image [16][32][3] = {0};
+byte image [rows][cols][3] = {0};
 
 
 float x = 0;
@@ -49,13 +47,13 @@ void loop() {
   y = y+dy*dt;
 
 
-  byte r = positive_modulo(x, 16);
-  byte c = positive_modulo(y, 32);
+  byte r = positive_modulo(x, rows);
+  byte c = positive_modulo(y, cols);
 
-  byte rp = constrain(r+1, 0, 15);
-  byte rm = constrain(r-1, 0, 15);
-  byte cp = constrain(c+1, 0, 31);
-  byte cm = constrain(c-1, 0, 31);
+  byte rp = constrain(r+1, 0, rows - 1);
+  byte rm = constrain(r-1, 0, rows - 1);
+  byte cp = constrain(c+1, 0, cols - 1);
+  byte cm = constrain(c-1, 0, cols - 1);
   
   image[rm][c][0] = 255;
   image[rm][c][1] = 255;
@@ -86,12 +84,12 @@ inline int positive_modulo(int i, int n) {
 
 void setupBackground()
 {
-  for (byte r = 0; r < 16; r++)
-    for (byte c = 0; c < 32; c++)
+  for (byte r = 0; r < rows; r++)
+    for (byte c = 0; c < cols; c++)
     {
       image[r][c][0] =0;
-      image[r][c][1] = c << 1;
-      image[r][c][2] = r << 2;
+      image[r][c][1] = c << 0;
+      image[r][c][2] = r << 0;
     }
 }
 
@@ -101,12 +99,12 @@ void sendImage()
   digitalWrite(RstPin, HIGH);
   digitalWrite(CsPin, LOW);
     
-  for (byte r = 0; r < 8; r++)
-    for (byte c = 0; c < 32; c++)
+  for (byte r = 0; r < rows >> 1; r++)
+    for (byte c = 0; c < cols; c++)
       for (byte rOff = 0; rOff <= 1; rOff++)
         for (byte rbg =0; rbg < 3; rbg++)
         {
-          SPI.write(image[r+rOff*8][c][rbg]);
+          SPI.write(image[r+rOff*(rows / 2)][c][rbg]);
         }
 
   digitalWrite(CsPin, HIGH);

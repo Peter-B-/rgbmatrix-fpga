@@ -92,6 +92,7 @@ begin
             rgb2(2) => r2,
             rgb2(1) => g2,
             rgb2(0) => b2,
+            led_addr(3) => d,
             led_addr(2) => c,
             led_addr(1) => b,
             led_addr(0) => a,

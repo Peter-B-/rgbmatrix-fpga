@@ -33,8 +33,8 @@ package rgbmatrix_pkg is
     constant PIXEL_DEPTH  : integer := 8; -- number of bits per pixel
     
     -- Special constants (change these at your own risk, stuff might break!)
-    constant PANEL_WIDTH  : integer := 32; -- width of the panel in pixels
-    constant PANEL_HEIGHT : integer := 16; -- height of the panel in pixels
+    constant PANEL_WIDTH  : integer := 64; -- width of the panel in pixels
+    constant PANEL_HEIGHT : integer := 32; -- height of the panel in pixels
     constant DATA_WIDTH   : positive := PIXEL_DEPTH*6;
                                          -- one bit for each subpixel (3), times
                                          -- the number of simultaneous lines (2)

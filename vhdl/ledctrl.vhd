@@ -41,7 +41,7 @@ entity ledctrl is
     clk_out  : out std_logic;
     rgb1     : out std_logic_vector(2 downto 0);
     rgb2     : out std_logic_vector(2 downto 0);
-    led_addr : out std_logic_vector(2 downto 0);
+    led_addr : out std_logic_vector(3 downto 0);
     lat      : out std_logic;
     oe       : out std_logic;
     -- Memory IO
@@ -60,14 +60,14 @@ architecture bhv of ledctrl is
   -- State machine signals
   signal col_count, next_col_count            : unsigned(IMG_WIDTH_LOG2 downto 0);
   signal bpp_count, next_bpp_count            : unsigned(PIXEL_DEPTH-1 downto 0);
-  signal s_led_addr, next_led_addr            : std_logic_vector(2 downto 0);
+  signal s_led_addr, next_led_addr            : std_logic_vector(3 downto 0);
   signal s_ram_addr, next_ram_addr            : std_logic_vector(ADDR_WIDTH-1 downto 0);
   signal s_rgb1, next_rgb1, s_rgb2, next_rgb2 : std_logic_vector(2 downto 0);
   signal s_oe, s_lat, s_clk_out               : std_logic;
 begin
 
   -- Breakout internal signals to the output port
-  led_addr <= std_logic_vector(unsigned(s_led_addr) + 7);
+  led_addr <= std_logic_vector(unsigned(s_led_addr) + 15);
   addr     <= s_ram_addr;
   rgb1     <= s_rgb1;
   rgb2     <= s_rgb2;
@@ -133,7 +133,7 @@ begin
     -- States
     case state is
       when INIT =>
-        if(s_led_addr = "111") then
+        if(s_led_addr = "1111") then
           if(bpp_count = unsigned(to_signed(-2, PIXEL_DEPTH))) then
             next_bpp_count <= (others => '0');
           else
